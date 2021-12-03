@@ -25,6 +25,10 @@ php artisan migrate
 php artisan db:seed
 ```
 
+### Database
+
+The app's data is stored in a MYSQL database. You can configure it from the `.env` file.
+
 ## Goals
 
 This app demonstrates our understanding of REST APIS through some basic features:
