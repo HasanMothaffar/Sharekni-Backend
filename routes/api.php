@@ -32,8 +32,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 	Route::get('/profile', [UsersController::class, 'profile']);
 	Route::post('/logout', [AuthController::class, 'logout']);
 
-	Route::prefix('/products', function () {
-		Route::post('', [ProductsController::class, 'store']);
+	Route::prefix('products')->group(function () {
+		Route::post('/', [ProductsController::class, 'store']);
 		Route::patch('/{id}', [ProductsController::class, 'update']);
 		Route::delete('/{id}', [ProductsController::class, 'destroy']);
 
