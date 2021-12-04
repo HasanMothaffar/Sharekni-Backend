@@ -63,7 +63,14 @@ class ProductsController extends Controller
 	{
 		$validated = $request->validated();
 		
-		return Product::create($request->all());
+		$product = Product::create($request->safe()->all());
+		$product['owner_id'] = auth()->id();
+		$product->save();
+
+		return response()->json([
+			'message' => 'Product saved successfully!',
+			'data' => $product
+		]);
 	}
 
 	/**
