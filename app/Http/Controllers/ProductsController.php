@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -51,30 +52,17 @@ class ProductsController extends Controller
 			'per_page' => $products->perPage(),
 			'last_page' => $products->lastPage()
 		], 200);
-
 	}
 
 	/**
 	 * Store a newly created resource in storage.
 	 *
-	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(Request $request)
+	public function store(StoreProductRequest $request)
 	{
-		$request->validate([
-			'name' => 'required',
-			'price' => 'required',
-			'price_1' => 'required',
-			'price_2' => 'required',
-			'price_3' => 'required',
-			'description' => 'required',
-			'expiry_date' => 'required',
-			'img_url' => 'required',
-			'quantity' => 'required',
-			'category_id' => 'required',
-			'owner_id' => 'required'
-		]);
+		$validated = $request->validated();
+		
 		return Product::create($request->all());
 	}
 
