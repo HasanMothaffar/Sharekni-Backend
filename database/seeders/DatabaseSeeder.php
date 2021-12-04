@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -16,37 +18,14 @@ class DatabaseSeeder extends Seeder
 	public function run()
 	{
 		// \App\Models\User::factory(10)->create();
-		$names = [
-			'App',
-			'Ball',
-			'Toy',
-			'Electronic',
-			'Makeup',
-			'Game',
-			'Hair'
-		];
 
-		$product_names = [
-			'Another product',
-			'Product',
-			'hasan product',
-			'ebola',
-			'kimola product',
-			'hair shampoo',
-			'yes no product',
-		];
 
-		for ($i = 0; $i < count($names); $i++) {
-			DB::table('categories')->insert([
-				'name' => $names[$i]
-			]);
-		}
+		Category::factory()
+			->count(10)
+			->create();
 
-		for ($i = 0; $i < count($names); $i++) {
-			DB::table('products')->insert([
-				'name' => $product_names[$i],
-				'category_id' => $i + 1
-			]);
-		}
+		Product::factory()
+			->count(30)
+			->create();
 	}
 }
