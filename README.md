@@ -29,6 +29,10 @@ php artisan db:seed
 
 The app's data is stored in a MYSQL database. You can configure it from the `.env` file.
 
+### Debugging
+
+Note that in the .env file, there's a field called `APP_DEBUG` that is set to `true` by default. Only set it to `false` if you want to mock a production environment.
+
 ## Goals
 
 This app demonstrates our understanding of REST APIS through some basic features:
@@ -37,3 +41,7 @@ This app demonstrates our understanding of REST APIS through some basic features
 -   Registration - Logging in - Logging out
 
 The authentication and authorization parts are mainly handled by **Laravel Sanctum**
+
+## TODO
+
+Read more about throttling (login throttling in the authentication docs laravel)
