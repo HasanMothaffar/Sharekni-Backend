@@ -16,9 +16,36 @@ class DatabaseSeeder extends Seeder
 	public function run()
 	{
 		// \App\Models\User::factory(10)->create();
-		for ($i = 0; $i < 10; $i++) {
+		$names = [
+			'App',
+			'Ball',
+			'Toy',
+			'Electronic',
+			'Makeup',
+			'Game',
+			'Hair'
+		];
+
+		$product_names = [
+			'Another product',
+			'Product',
+			'hasan product',
+			'ebola',
+			'kimola product',
+			'hair shampoo',
+			'yes no product',
+		];
+
+		for ($i = 0; $i < count($names); $i++) {
 			DB::table('categories')->insert([
-				'name' => Str::random(10),
+				'name' => $names[$i]
+			]);
+		}
+
+		for ($i = 0; $i < count($names); $i++) {
+			DB::table('products')->insert([
+				'name' => $product_names[$i],
+				'category_id' => $i + 1
 			]);
 		}
 	}
