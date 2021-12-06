@@ -3,67 +3,53 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\Auth\LoginUserRequest;
+use App\Http\Requests\RegisterUserRequest;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
-    {
+	public function register(RegisterUserRequest $request)
+	{
+		$validated = $request->validated();
+		$fields = $request->safe()->all();
 
-        $attr = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users,email',
+		$user = User::create([
+			'name' => $fields['name'],
+			'password' => bcrypt($fields['password']),
+			'email' => $fields['email']
+		]);
 
-            // Clients have to send a 'password_confirmation' field
-            'password' => 'required|string|min:6|confirmed'
-        ]);
+		return response()->json([
+			'token' => $user->createToken('API Token')->plainTextToken,
+			'user' => $user
+		], 200);
+	}
 
-        $user = User::create([
-            'name' => $attr['name'],
-            'password' => bcrypt($attr['password']),
-            'email' => $attr['email']
-        ]);
+	public function login(LoginUserRequest $request)
+	{
+		$validated = $request->validated();
+		$fields = $request->safe()->all();
 
-        return response()->json([
-            'token' => $user->createToken('API Token')->plainTextToken,
-            'user' => $user
-        ], 200);
-    }
+		if (!Auth::attempt($fields)) {
+			return response()->json([
+				'message' => 'Invalid credentials'
+			], 401);
+		}
 
-    public function login(Request $request)
-    {
-        $attr = $request->validate([
-            'email' => 'required|string|email|',
-            'password' => 'required|string|min:6'
-        ]);
+		$user = User::firstWhere('email', $fields['email']);
+		return response()->json([
+			'token' => $user->createToken('API Token')->plainTextToken,
+			'user' => $user
+		], 200);
+	}
 
-        $user = User::where('email', $attr['email'])
-            ->get()
-            ->first();
-
-        if (
-            !$user ||
-            !Hash::check($attr['password'], $user->password)
-        ) {
-            return response()->json([
-                'message' => 'Invalid credentials'
-            ], 401);
-        }
-
-        return response()->json([
-            'token' => $user->createToken('API Token')->plainTextToken,
-            'user' => $user
-        ], 200);
-    }
-
-    public function logout()
-    {
-        auth()->user()->tokens()->delete();
-
-        return response()->json([
-            'message' => 'Logged out successfully!'
-        ], 200);
-    }
+	public function logout()
+	{
+		auth()->user()->tokens()->delete();
+		return response()->json([
+			'message' => 'Logged out successfully!'
+		], 200);
+	}
 }
