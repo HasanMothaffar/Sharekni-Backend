@@ -20,12 +20,13 @@ class CreateProductsTable extends Migration
 			$table->double('price_1');
 			$table->double('price_2');
 			$table->double('price_3');
+			$table->integer('views')->default(0);
 			$table->longText('description');
 			$table->date('expiry_date');
 			$table->text('img_url');
 			$table->integer('quantity')->default(1);
 			$table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
-			// $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
+			$table->foreignId('owner_id')->nullable()->constrained('users')->cascadeOnDelete();
 			$table->timestamps();
 		});
 	}
