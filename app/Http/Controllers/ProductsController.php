@@ -22,7 +22,7 @@ class ProductsController extends Controller
 
 		$category_id = $request->query('category');
 		$name = $request->query('name');
-		$sort = $request->query('sort');
+		$sort_column = $request->query('sort');
 
 		$products =
 			Product::when($category_id, function ($query, $category_id) {
@@ -31,19 +31,21 @@ class ProductsController extends Controller
 			->when($name, function ($query, $name) {
 				return $query->where('name', 'like', "%$name%");
 			})
-			->when($sort, function ($query, $sort) {
-				// Example request: ?sort=name_asc
-				// Example 2 request: ?sort=price_desc
-
-				$sort_fields = explode('_', $sort);
-
-				$column = $sort_fields[0];
-				$direction = $sort_fields[1];
-
+			->when($sort_column, function ($query, $sort_column) {
+				// Example request 1: ?sort=name&dir=asc
+				// Example request 2: ?sort=price&dir=desc
 				$valid_sort_columns = ['name', 'price', 'expiry_date'];
-				if (!in_array($column, $valid_sort_columns)) return $query;
+				$valid_sort_directions = ['asc', 'desc'];
+				$direction = request()->query('dir', 'asc');
 
-				return $query->orderBy($column, $direction);
+				if (
+					!in_array(strtolower($sort_column), $valid_sort_columns) ||
+					!in_array(strtolower($direction), $valid_sort_directions)
+				) {
+					return $query;
+				}
+
+				return $query->orderBy($sort_column, $direction);
 			})->paginate(6);
 
 		return response()->json([
@@ -62,7 +64,7 @@ class ProductsController extends Controller
 	public function store(StoreProductRequest $request)
 	{
 		$validated = $request->validated();
-		
+
 		$product = Product::create($request->safe()->all());
 		$product['owner_id'] = auth()->id();
 		$product->save();
