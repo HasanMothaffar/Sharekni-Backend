@@ -18,10 +18,10 @@ class CreateUsersTable extends Migration
 			$table->string('name');
 			$table->string('email')->unique();
 			$table->string('password');
-			$table->text('profile_img_url');
-			$table->text('whatsapp_url');
-			$table->text('facebook_url');
-			$table->rememberToken();
+			// $table->text('profile_img_url');
+			// $table->text('whatsapp_url');
+			// $table->text('facebook_url');
+			// $table->rememberToken();
 			$table->timestamps();
 		});
 	}

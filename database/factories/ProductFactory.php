@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\DB;
 
 class ProductFactory extends Factory
 {
@@ -23,7 +24,8 @@ class ProductFactory extends Factory
 			'quantity' => $this->faker->numberBetween(2, 30),
 			'category_id' => $this->faker->numberBetween(1, 10),
 			'img_url' => $this->faker->text(),
-			'expiry_date' => $this->faker->date()
+			'expiry_date' => $this->faker->date(),
+			'owner_id' => DB::selectOne('SELECT id from users ORDER BY RAND() LIMIT 1')->id
 		];
 	}
 }
