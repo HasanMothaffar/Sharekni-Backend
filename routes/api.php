@@ -38,7 +38,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 		Route::delete('/{id}', [ProductsController::class, 'destroy']);
 
 		Route::post('/{id}/like', [ProductsController::class, 'like']);
-		Route::get('/{id}/comments', [CommentsController::class, 'index']);
-		Route::post('/{id}/comments', [CommentsController::class, 'store']);
+		Route::get('/{id}/reviews', [ReviewsController::class, 'index']);
+		Route::post('/{id}/reviews', [ReviewsController::class, 'store']);
 	});
 });
