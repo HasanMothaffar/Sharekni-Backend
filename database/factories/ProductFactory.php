@@ -22,9 +22,9 @@ class ProductFactory extends Factory
 			'price_3' => $this->faker->numberBetween(2, 30),
 			'description' => $this->faker->text(),
 			'quantity' => $this->faker->numberBetween(2, 30),
-			'category_id' => $this->faker->numberBetween(1, 10),
 			'img_url' => $this->faker->text(),
 			'expiry_date' => $this->faker->date(),
+			'category_id' => DB::selectOne('SELECT id from categories ORDER BY RAND() LIMIT 1')->id,
 			'owner_id' => DB::selectOne('SELECT id from users ORDER BY RAND() LIMIT 1')->id
 		];
 	}

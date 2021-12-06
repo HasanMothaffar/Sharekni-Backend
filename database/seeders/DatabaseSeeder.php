@@ -2,12 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\Review;
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,29 +13,16 @@ class DatabaseSeeder extends Seeder
 	 */
 	public function run()
 	{
-		// \App\Models\User::factory(10)->create();
-
-
-		User::factory()
-			->count(10)
-			->create();
-
-		User::create([
-			'name' => 'Hasan',
-			'email' => 'hasan.mozafar@gmail.com',
-			'password' => '12345678'
+		/**
+		 * Please make sure that the UserSeeder and CategorySeeder
+		 * classes are called first! Some values in the classes
+		 * below them depend on ids that are supposed to be initialized first.
+		 */
+		$this->call([
+			UserSeeder::class,
+			CategorySeeder::class,
+			ProductSeeder::class,
+			ReviewSeeder::class
 		]);
-
-		Category::factory()
-			->count(10)
-			->create();
-
-		Product::factory()
-			->count(30)
-			->create();
-
-		Review::factory()
-			->count(10)
-			->create();
 	}
 }
