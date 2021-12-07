@@ -45,3 +45,7 @@ The authentication and authorization parts are mainly handled by **Laravel Sanct
 ## TODO
 
 Read more about throttling (login throttling in the authentication docs laravel)
+
+- Learn about Laravel's authorization policies in order to ensure that users can only delete records that they have entered.
+- Figure out whether the project requires the 'like' or 'wishlist' functionality.
+- Refactor database model relationships.
