@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -21,7 +22,7 @@ class UserSeeder extends Seeder
 		User::create([
 			'name' => 'Hasan',
 			'email' => 'hasan.mozafar@gmail.com',
-			'password' => '12345678'
+			'password' => bcrypt('12345678')
 		]);
 	}
 }
