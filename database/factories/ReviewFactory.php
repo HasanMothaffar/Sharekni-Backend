@@ -17,7 +17,8 @@ class ReviewFactory extends Factory
 		return [
 			'comment' => $this->faker->text(),
 			'rating' => $this->faker->numberBetween(1, 5),
-			'user_id' => DB::selectOne('SELECT id from users ORDER BY RAND() LIMIT 1')->id
+			'user_id' => DB::selectOne('SELECT id from users ORDER BY RAND() LIMIT 1')->id,
+			'product_id' => DB::selectOne('SELECT id from products ORDER BY RAND() LIMIT 1')->id
 		];
 	}
 }
