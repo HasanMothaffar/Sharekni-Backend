@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginUserRequest;
-use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-	public function register(RegisterUserRequest $request)
+	public function register(RegisterRequest $request)
 	{
 		$validated = $request->validated();
 		$fields = $request->safe()->all();
@@ -27,7 +27,7 @@ class AuthController extends Controller
 		], 200);
 	}
 
-	public function login(LoginUserRequest $request)
+	public function login(LoginRequest $request)
 	{
 		$validated = $request->validated();
 		$fields = $request->safe()->all();
