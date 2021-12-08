@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ProductsController extends Controller
 {
@@ -26,6 +28,7 @@ class ProductsController extends Controller
 
 		$products =
 			Product::when($category_id, function ($query, $category_id) {
+				// TODO: Use the has many function in the Category model
 				return $query->where('category_id', $category_id);
 			})
 			->when($name, function ($query, $name) {
@@ -87,6 +90,12 @@ class ProductsController extends Controller
 			$product = Product::findOrFail($id);
 			$product->views += 1;
 			$product->save();
+			
+			$product_reviews = $product->reviews()->get();
+			foreach ($product_reviews as $review) {
+				$review['user'] = User::find($review['user_id']);
+			}
+			$product['reviews'] = $product_reviews;
 
 			return response()->json(['data' => $product], 200);
 		} catch (ModelNotFoundException $e) {
@@ -104,6 +113,9 @@ class ProductsController extends Controller
 	public function update(Request $request, $id)
 	{
 		$product = Product::find($id);
+		Gate::authorize('modify-product', $product);
+
+		$request->validated();
 
 		if (!$product) {
 			return response()->json(['message' => 'Product not found.'], 404);
@@ -124,8 +136,18 @@ class ProductsController extends Controller
 	{
 		try {
 			$product = Product::findOrFail($id);
+			Gate::authorize('modify-product', $product);
 			$product->delete();
 			return response()->json(['message' => 'Product deleted successfully!'], 200);
+		} catch (ModelNotFoundException $e) {
+			return response()->json(['message' => 'Product not found.'], 404);
+		}
+	}
+
+	public function like($id)
+	{
+		try {
+			$product = Product::findOrFail($id);
 		} catch (ModelNotFoundException $e) {
 			return response()->json(['message' => 'Product not found.'], 404);
 		}
