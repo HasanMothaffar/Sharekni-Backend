@@ -41,4 +41,9 @@ class Product extends Model
 
 		return $price;
 	}
+
+	public function reviews()
+	{
+		return $this->hasMany(Review::class);
+	}
 }
