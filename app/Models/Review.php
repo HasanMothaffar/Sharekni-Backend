@@ -7,5 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
 {
-    use HasFactory;
+	use HasFactory;
+
+	protected $hidden = [
+		'product_id',
+		'user_id'
+	];
 }
