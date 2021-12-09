@@ -75,7 +75,7 @@ class ProductsController extends Controller
 		return response()->json([
 			'message' => 'Product saved successfully!',
 			'data' => $product
-		]);
+		], 200);
 	}
 
 	/**
@@ -90,12 +90,8 @@ class ProductsController extends Controller
 			$product = Product::findOrFail($id);
 			$product->views += 1;
 			$product->save();
-			
-			$product_reviews = $product->reviews()->get();
-			foreach ($product_reviews as $review) {
-				$review['user'] = User::find($review['user_id']);
-			}
-			$product['reviews'] = $product_reviews;
+
+			$product['reviews'] = $product->reviews();
 
 			return response()->json(['data' => $product], 200);
 		} catch (ModelNotFoundException $e) {

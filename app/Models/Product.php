@@ -44,6 +44,11 @@ class Product extends Model
 
 	public function reviews()
 	{
-		return $this->hasMany(Review::class);
+		return $this->hasMany(Review::class)
+		->get()
+		->map(function ($review) {
+			$review['user'] = $review->user()->get();
+			return $review;
+		});
 	}
 }
