@@ -26,22 +26,6 @@ class Product extends Model
 		'owner_id'
 	];
 
-	private function getPrice()
-	{
-		$price = 0;
-		$date_diff = time() - $this['expiry_date'];
-
-		if ($date_diff < 30 && $date_diff >= 15) {
-			$price = $this['price-1'];
-		} else if ($date_diff < 15 && $date_diff >= 7) {
-			$price = $this['price-2'];
-		} else {
-			$price = $this['price-3'];
-		}
-
-		return $price;
-	}
-
 	public function reviews()
 	{
 		return $this->hasMany(Review::class)

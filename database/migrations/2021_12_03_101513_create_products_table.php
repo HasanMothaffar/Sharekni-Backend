@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -37,7 +38,6 @@ class CreateProductsTable extends Migration
 			$table->integer('quantity')->default(1);
 			$table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
 
-			// TODO: Seems like I'm doing a mistake here making the 'owner_id' column nullable. Read more about it.
 			$table->foreignId('owner_id')->nullable()->constrained('users')->cascadeOnDelete();
 			$table->timestamps();
 		});

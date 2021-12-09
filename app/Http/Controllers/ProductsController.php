@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Resources\ProductCollection;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -28,7 +30,6 @@ class ProductsController extends Controller
 
 		$products =
 			Product::when($category_id, function ($query, $category_id) {
-				// TODO: Use the has many function in the Category model
 				return $query->where('category_id', $category_id);
 			})
 			->when($name, function ($query, $name) {
@@ -51,12 +52,7 @@ class ProductsController extends Controller
 				return $query->orderBy($sort_column, $direction);
 			})->paginate(6);
 
-		return response()->json([
-			'data' => $products->items(),
-			'current_page' => $products->currentPage(),
-			'per_page' => $products->perPage(),
-			'last_page' => $products->lastPage()
-		], 200);
+		return new ProductCollection($products);
 	}
 
 	/**
@@ -91,9 +87,8 @@ class ProductsController extends Controller
 			$product->views += 1;
 			$product->save();
 
-			$product['reviews'] = $product->reviews();
+			return (new ProductResource($product))->response();
 
-			return response()->json(['data' => $product], 200);
 		} catch (ModelNotFoundException $e) {
 			return response()->json(['message' => 'Product not found.'], 404);
 		}
