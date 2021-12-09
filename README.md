@@ -16,7 +16,7 @@ composer install
 
 2. Contact me to send you a copy of the `.env` file, which contains the app's configuration.
 
-3. Run the app's migrations and the Database's seeders
+3. Run the migrations and seeders of the database.
 
 ```sh
 php artisan migrate --seed
