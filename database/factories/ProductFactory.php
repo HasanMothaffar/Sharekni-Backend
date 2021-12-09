@@ -14,12 +14,22 @@ class ProductFactory extends Factory
 	 */
 	public function definition()
 	{
+		/**
+		 * Prices are hardcoded because they have to follow
+		 * a validation logic that's not possible to implement
+		 * using the Faker library.
+		 */
+		$original_price = 300;
+		$price_1 = 200;
+		$price_2 = 100;
+		$price_3 = 50;
+
 		return [
 			'name' => $this->faker->name(),
-			'original_price' => $this->faker->numberBetween(2, 30),
-			'price_1' => $this->faker->numberBetween(2, 30),
-			'price_2' => $this->faker->numberBetween(2, 30),
-			'price_3' => $this->faker->numberBetween(2, 30),
+			'original_price' => $original_price,
+			'price_1' => $price_1,
+			'price_2' => $price_2,
+			'price_3' => $price_3,
 			'description' => $this->faker->text(),
 			'quantity' => $this->faker->numberBetween(2, 30),
 			'img_url' => $this->faker->text(),
