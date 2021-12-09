@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
+
 class UsersController extends Controller
 {
 	public function profile()
 	{
-		// TODO: Make a resource class for this response?
-		$user = auth()->user();
-		$user['products'] = $user->products()->get();
-		$user['reviews'] = $user->reviews()->get();
-		return $user;
+		return new UserResource(auth()->user());
 	}
 }
