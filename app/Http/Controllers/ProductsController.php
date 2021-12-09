@@ -88,7 +88,6 @@ class ProductsController extends Controller
 			$product->save();
 
 			return (new ProductResource($product))->response();
-
 		} catch (ModelNotFoundException $e) {
 			return response()->json(['message' => 'Product not found.'], 404);
 		}
@@ -139,6 +138,35 @@ class ProductsController extends Controller
 	{
 		try {
 			$product = Product::findOrFail($id);
+			if (auth()->user()->likesProduct($id)) {
+				// TODO: Set a proper response code
+				return response()->json(['message' => 'Product already liked.']);
+			}
+
+			auth()->user()->likes()->attach($id);
+			$product->likes += 1;
+			$product->save();
+
+			return response()->json(['message' => 'Product liked succesfully!'], 200);
+		} catch (ModelNotFoundException $e) {
+			return response()->json(['message' => 'Product not found.'], 404);
+		}
+	}
+
+	public function dislike($id)
+	{
+		try {
+			$product = Product::findOrFail($id);
+			if (!auth()->user()->likesProduct($id)) {
+				// TODO: Set a proper response code
+				return response()->json(['message' => 'Product is already not liked.']);
+			}
+
+			auth()->user()->likes()->detach($id);
+			$product->likes -= 1;
+			$product->save();
+
+			return response()->json(['message' => 'Product disliked succesfully!'], 200);
 		} catch (ModelNotFoundException $e) {
 			return response()->json(['message' => 'Product not found.'], 404);
 		}

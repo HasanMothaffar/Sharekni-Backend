@@ -35,4 +35,8 @@ class Product extends Model
 			return $review;
 		});
 	}
+
+	public function likers() {
+		return $this->belongsToMany(User::class, 'likes');
+	}
 }

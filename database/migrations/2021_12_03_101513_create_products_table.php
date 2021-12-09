@@ -16,7 +16,6 @@ class CreateProductsTable extends Migration
 	{
 		Schema::create('products', function (Blueprint $table) {
 			$table->id();
-			$table->string('name');
 
 			/**
 			 * original_price: date > 30 days
@@ -32,12 +31,16 @@ class CreateProductsTable extends Migration
 			$table->double('price_3');
 
 			$table->integer('views')->default(0);
+			$table->integer('likes')->default(0);
+			$table->integer('quantity')->default(1);
+
+			$table->string('name');
 			$table->longText('description');
+
 			$table->date('expiry_date');
 			$table->text('img_url');
-			$table->integer('quantity')->default(1);
+			
 			$table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
-
 			$table->foreignId('owner_id')->nullable()->constrained('users')->cascadeOnDelete();
 			$table->timestamps();
 		});
