@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use Illuminate\Http\Request;
-
 class UsersController extends Controller
 {
 	public function profile()
 	{
+		// TODO: Make a resource class for this response?
 		$user = auth()->user();
-		$user['products'] = Product::where('owner_id', '=', auth()->id())->get();
+		$user['products'] = $user->products()->get();
+		$user['reviews'] = $user->reviews()->get();
 		return $user;
 	}
 }
