@@ -17,6 +17,7 @@ class Product extends Model
 		'price_3',
 		'description',
 		'expiry_date',
+		'img_url',
 		'quantity',
 		'category_id',
 	];

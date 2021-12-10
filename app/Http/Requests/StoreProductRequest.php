@@ -31,7 +31,7 @@ class StoreProductRequest extends FormRequest
 			'price_3' => 'required|numeric|gt:0|lt:price_2',
 			'description' => 'required|string',
 			'expiry_date' => 'required',
-			'image' => 'required|image',
+			'img_url' => 'required',
 			'quantity' => 'required|integer|gt:0',
 			'category_id' => 'exists:categories,id',
 		];

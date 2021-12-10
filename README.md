@@ -16,10 +16,13 @@ composer install
 
 2. Contact me to send you a copy of the `.env` file, which contains the app's configuration.
 
-3. Run the migrations and seeders of the database.
+3. Run the app's migrations and the Database's seeders
 
 ```sh
-php artisan migrate --seed
+php artisan migrate
+
+#If seeds are available
+php artisan db:seed
 ```
 
 ### Database
@@ -36,9 +39,6 @@ This app demonstrates our understanding of REST APIS through some basic features
 
 -   CRUD operations on the products resource
 -   Registration - Logging in - Logging out
--   Filtration/Sorting operations on resources
--   Adding reviews to products
--   Like/dislike functionality on products
 
 The authentication and authorization parts are mainly handled by **Laravel Sanctum**
 
@@ -48,5 +48,5 @@ Read more about throttling (login throttling in the authentication docs laravel)
 
 -   Refactor database model relationships.
 -   Discuss the 'expiry_date' filters.
--   Use the prunable trait in the product model to delete expired products
--   Handle images, date, and product prices
+-	Use the prunable trait in the product model to delete expired products
+-   Handle images
