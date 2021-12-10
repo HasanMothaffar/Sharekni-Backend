@@ -33,7 +33,7 @@ class ProductFactory extends Factory
 			'description' => $this->faker->text(),
 			'quantity' => $this->faker->numberBetween(2, 30),
 			'image_url' => $this->faker->imageUrl(),
-			'expiry_date' => $this->faker->date(),
+			'expiry_date' => $this->faker->dateTimeBetween('2021-12-30', '2022-1-30'),
 			'likes' => 0,
 			'views' => 0,
 			'category_id' => DB::selectOne('SELECT id from categories ORDER BY RAND() LIMIT 1')->id,

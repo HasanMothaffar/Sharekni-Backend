@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Category;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
@@ -51,10 +52,13 @@ class ProductResource extends JsonResource
 	 */
 	public function getPrice()
 	{
-		return 2;
-
-		$price = 0;
-		$date_diff = time() - $this['expiry_date'];
+		/**
+		 * Reference on dealing with dates:
+		 * https://stackoverflow.com/questions/46623065/how-to-subtract-two-dates-in-laravel5-4
+		 */
+		$expiry_date = Carbon::parse($this->expiry_date);
+		$date_diff = Carbon::now()->diffInDays($expiry_date, false);
+		$price = $this->original_price;
 
 		if ($date_diff < 30 && $date_diff >= 15) {
 			$price = $this['price_1'];
