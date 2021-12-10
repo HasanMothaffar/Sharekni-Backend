@@ -38,8 +38,8 @@ class CreateProductsTable extends Migration
 			$table->longText('description');
 
 			$table->date('expiry_date');
-			$table->text('img_url');
-			
+			$table->text('image_url')->nullable();
+
 			$table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
 			$table->foreignId('owner_id')->nullable()->constrained('users')->cascadeOnDelete();
 			$table->timestamps();

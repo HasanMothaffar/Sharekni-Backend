@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class ProductsController extends Controller
 {
@@ -63,14 +64,18 @@ class ProductsController extends Controller
 	public function store(StoreProductRequest $request)
 	{
 		$validated = $request->validated();
+		$image_upload_path = $request->file('image')->store('products', 'public');
 
 		$product = Product::create($request->safe()->all());
 		$product['owner_id'] = auth()->id();
+		$product['image_url'] = asset(Storage::url($image_upload_path));
+		$product['likes'] = 0;
+		$product['views'] = 0;
 		$product->save();
 
 		return response()->json([
 			'message' => 'Product saved successfully!',
-			'data' => $product
+			'data' => new ProductResource($product)
 		], 200);
 	}
 
