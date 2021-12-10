@@ -138,14 +138,13 @@ class ProductsController extends Controller
 			return response()->json(['message' => 'Product not found.'], 404);
 		}
 	}
-
+	
 	public function like($id)
 	{
 		try {
 			$product = Product::findOrFail($id);
 			if (auth()->user()->likesProduct($id)) {
-				// TODO: Set a proper response code
-				return response()->json(['message' => 'Product already liked.']);
+				return response()->json(['message' => 'Product already liked.'], 200);
 			}
 
 			auth()->user()->likes()->attach($id);

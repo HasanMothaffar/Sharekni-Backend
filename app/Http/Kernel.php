@@ -75,8 +75,8 @@ class Kernel extends HttpKernel
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-		$schedule->call(function () {
-			DB::delete('DELETE FROM products WHERE expiry_date <= ?', [time()]);
-		})->daily();
+		// $schedule->call(function () {
+		// 	DB::delete('DELETE FROM products WHERE expiry_date <= ?', [time()]);
+		// })->daily();
 	}
 }
