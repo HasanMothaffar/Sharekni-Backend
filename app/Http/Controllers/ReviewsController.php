@@ -2,44 +2,76 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\Review;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class ReviewsController extends Controller
 {
-    public function index (Request $request, $id) {
-		$sort = $request->query('sort');
-		$rating = $request->query('rating');
+	public function index(Request $request, $productID)
+	{
+		// $sort = $request->query('sort');
+		// $rating = $request->query('rating');
 
-		$reviews =
-			Review::where('product_id', $id)
-			->when($rating, function ($query, $rating) {
-				return $query->where('rating', $rating);
-			})
-			->when($sort, function ($query, $sort) {
-				// TODO: Sort by date and rating
+		// $reviews =
+		// 	Review::where('product_id', $productID)
+		// 	->when($rating, function ($query, $rating) {
+		// 		return $query->where('rating', $rating);
+		// 	})
+		// 	->when($sort, function ($query, $sort) {
+		// 		// TODO: Sort by date and rating
 
-				$direction = request()->query('dir', 'asc');
+		// 		$direction = request()->query('dir', 'asc');
 
-				$valid_sort_columns = ['rating', 'date'];
-				$valid_directions = ['asc', 'desc'];
+		// 		$valid_sort_columns = ['rating', 'date'];
+		// 		$valid_directions = ['asc', 'desc'];
 
 
-				return $query->orderBy($sort_column, $direction);
-			})
-			->paginate(6);
+		// 		return $query->orderBy($sort_column, $direction);
+		// 	})
+		// 	->paginate(6);
 
-		return $reviews;
+		try {
+			$product = Product::findOrFail($productID);
+			return $product->reviews()->paginate(6);
+		} catch (ModelNotFoundException $e) {
+			return response()->json(['message' => 'Product not found.'], 404);
+		}
 	}
 
-	public function destroy($id) {
+	public function store(Request $request, $productID)
+	{
 		try {
-			$review = Review::findOrFail($id);
-			$review->destroy();
-			return response()->json(['message' => 'Review deleted successfully!'], 200);
+			$product = Product::findOrFail($productID);
+			$request->validate([
+				'comment' => 'required|string'
+			]);
+
+			$review = new Review([
+				'comment' => $request->input('comment')
+			]);
+			$review['user_id'] = auth()->id();
+
+			$product->reviews()->save($review);
+			return response()->json(['message' => 'Review saved succesfully!'], 200);
 		} catch (ModelNotFoundException $e) {
-			return response()->json(['message' => 'Review not found.'], 404);
+			return response()->json(['message' => 'Product not found.'], 404);
 		}
+	}
+
+	public function destroy($productID, $reviewID)
+	{
+		$review = Review::where('id', $reviewID)
+			->where('product_id', $productID);
+		// TODO: Separate handling missing products and reviews
+		if (!$review) {
+			return response()->json(['message' => 'Resource not found.', 404]);
+		}
+
+		Gate::authorize('delete-review', $review);
+		$review->destroy();
+		return response()->json(['message' => 'Review deleted successfully!'], 200);
 	}
 }

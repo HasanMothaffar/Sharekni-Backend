@@ -27,15 +27,11 @@ class Product extends Model
 
 	public function reviews()
 	{
-		return $this->hasMany(Review::class)
-		->get()
-		->map(function ($review) {
-			$review['user'] = $review->user()->get();
-			return $review;
-		});
+		return $this->hasMany(Review::class);
 	}
 
-	public function likers() {
+	public function likers()
+	{
 		return $this->belongsToMany(User::class, 'likes');
 	}
 }

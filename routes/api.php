@@ -29,7 +29,6 @@ Route::get('/categories', [CategoriesController::class, 'index']);
 Route::get('/products', [ProductsController::class, 'index']);
 Route::get('/products/{id}', [ProductsController::class, 'show']);
 
-
 Route::group(['middleware' => 'auth:sanctum'], function () {
 	Route::get('/profile', [UsersController::class, 'profile']);
 	Route::post('/logout', [AuthController::class, 'logout']);

@@ -39,7 +39,7 @@ class ProductResource extends JsonResource
 			'quantity' => $this->quantity,
 			'image_url' => $this->image_url,
 			'category' => Category::find($this->category_id)->name,
-			'reviews' => $this->when($is_request_for_a_single_product, $this->reviews()),
+			'reviews' => $this->when($is_request_for_a_single_product, $this->getReviewsWithUsers()),
 			'views' => $this->views,
 			'likes' => $this->likes,
 			'is_liked' => $is_product_liked
@@ -69,5 +69,19 @@ class ProductResource extends JsonResource
 		}
 
 		return $price;
+	}
+
+	/**
+	 * Fetch the user informatoin for each review and
+	 * return the reviews collection.
+	 */
+	private function getReviewsWithUsers()
+	{
+		return $this->reviews()
+			->get()
+			->map(function ($review) {
+				$review['user'] = $review->user()->get();
+				return $review;
+			});
 	}
 }
