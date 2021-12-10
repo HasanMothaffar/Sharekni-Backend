@@ -16,7 +16,7 @@ composer install
 
 2. Contact me to send you a copy of the `.env` file, which contains the app's configuration.
 
-3. Run the app's migrations and the Database's seeders
+3. Run the app's migrations and, if available, run the Database' seeders
 
 ```sh
 php artisan migrate
@@ -46,7 +46,6 @@ The authentication and authorization parts are mainly handled by **Laravel Sanct
 
 Read more about throttling (login throttling in the authentication docs laravel)
 
--   Refactor database model relationships.
--   Discuss the 'expiry_date' filters.
--	Use the prunable trait in the product model to delete expired products
--   Handle images
+- Learn about Laravel's authorization policies in order to ensure that users can only delete records that they have entered.
+- Figure out whether the project requires the 'like' or 'wishlist' functionality.
+- Refactor database model relationships.

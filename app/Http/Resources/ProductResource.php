@@ -15,20 +15,7 @@ class ProductResource extends JsonResource
 	 */
 	public function toArray($request)
 	{
-		/**
-		 * Requests for /products should not return the product's reviews,
-		 * while requests for /products/{productId} should do.
-		 */
 		$is_request_for_a_single_product = $request->route('id');
-
-		/**
-		 * The 'sanctum' guard here is very important. The /products route
-		 * is not protected through the sanctum middleware, therefore calling
-		 * auth()->user() without specifying the 'sanctum' guard
-		 * would always return null.
-		 */
-		$is_product_liked = auth('sanctum')->check() ? auth('sanctum')->user()->likesProduct($this->id) : false;
-
 		return [
 			'id' => $this->id,
 			'name' => $this->name,
@@ -39,8 +26,6 @@ class ProductResource extends JsonResource
 			'quantity' => $this->quantity,
 			'category' => Category::find($this->category_id)->name,
 			'reviews' => $this->when($is_request_for_a_single_product, $this->reviews()),
-			'likes' => $this->likes,
-			'is_liked' => $is_product_liked
 		];
 	}
 
