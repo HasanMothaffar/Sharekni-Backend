@@ -34,11 +34,12 @@ class ProductResource extends JsonResource
 			'name' => $this->name,
 			'price' => $this->getPrice(),
 			'description' => $this->description,
-			'views' => $this->views,
 			'expiry_date' => $this->expiry_date,
 			'quantity' => $this->quantity,
+			'image_url' => $this->image_url,
 			'category' => Category::find($this->category_id)->name,
 			'reviews' => $this->when($is_request_for_a_single_product, $this->reviews()),
+			'views' => $this->views,
 			'likes' => $this->likes,
 			'is_liked' => $is_product_liked
 		];
