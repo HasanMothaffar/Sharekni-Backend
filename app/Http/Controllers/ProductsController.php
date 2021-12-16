@@ -29,6 +29,8 @@ class ProductsController extends Controller
 		$name = $request->query('name');
 		$sort_column = $request->query('sort');
 
+		// TODO: Add a limit query
+
 		$products =
 			Product::when($category_id, function ($query, $category_id) {
 				return $query->where('category_id', $category_id);
@@ -138,7 +140,7 @@ class ProductsController extends Controller
 			return response()->json(['message' => 'Product not found.'], 404);
 		}
 	}
-	
+
 	public function like($id)
 	{
 		try {
