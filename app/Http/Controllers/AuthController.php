@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -23,7 +23,8 @@ class AuthController extends Controller
 
 		return response()->json([
 			'token' => $user->createToken('API Token')->plainTextToken,
-			'user' => $user
+			'data' => $user,
+			'message' => 'Successfully created an account!'
 		], 200);
 	}
 
@@ -41,7 +42,8 @@ class AuthController extends Controller
 		$user = User::firstWhere('email', $fields['email']);
 		return response()->json([
 			'token' => $user->createToken('API Token')->plainTextToken,
-			'user' => $user
+			'data' => $user,
+			'message' => 'Successfully logged in!'
 		], 200);
 	}
 
