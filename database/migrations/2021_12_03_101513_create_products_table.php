@@ -38,14 +38,14 @@ class CreateProductsTable extends Migration
 			$table->longText('description');
 
 			$table->date('expiry_date');
-			$table->text('image_url')->nullable();
+			$table->text('image_url');
 
-			/* -- Contact Info -- */
+			/* -- Only one of these two is required -- */
 			$table->text('facebook_url')->nullable();
 			$table->text('phone_number')->nullable();
 
 			$table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
-			$table->foreignId('owner_id')->nullable()->constrained('users')->cascadeOnDelete();
+			$table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
 			$table->timestamps();
 		});
 	}

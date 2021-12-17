@@ -6,7 +6,6 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
-use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -67,7 +66,7 @@ class ProductsController extends Controller
 		$validated = $request->validated();
 		$image_upload_path = $request->file('image')->store('products', 'public');
 
-		$product = Product::create($request->safe()->all());
+		$product = new Product($request->safe()->all());
 		$product['owner_id'] = auth()->id();
 		$product['image_url'] = asset(Storage::url($image_upload_path));
 		$product['likes'] = 0;
@@ -108,6 +107,7 @@ class ProductsController extends Controller
 	 */
 	public function update(Request $request, $id)
 	{
+		// TODO: Update products
 		$product = Product::find($id);
 		Gate::authorize('modify-product', $product);
 
@@ -144,11 +144,13 @@ class ProductsController extends Controller
 	{
 		try {
 			$product = Product::findOrFail($id);
-			if (auth()->user()->likesProduct($id)) {
+			$user = auth()->user();
+
+			if ($user->likesProduct($id)) {
 				return response()->json(['message' => 'Product already liked.'], 200);
 			}
 
-			auth()->user()->likes()->attach($id);
+			$user->likes()->attach($id);
 			$product->likes += 1;
 			$product->save();
 
@@ -162,12 +164,14 @@ class ProductsController extends Controller
 	{
 		try {
 			$product = Product::findOrFail($id);
-			if (!auth()->user()->likesProduct($id)) {
+			$user = auth()->user();
+
+			if (!$user->likesProduct($id)) {
 				// TODO: Set a proper response code
 				return response()->json(['message' => 'Product is already not liked.']);
 			}
 
-			auth()->user()->likes()->detach($id);
+			$user->likes()->detach($id);
 			$product->likes -= 1;
 			$product->save();
 
