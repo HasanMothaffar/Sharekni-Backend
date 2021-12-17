@@ -28,8 +28,7 @@ class ProductsController extends Controller
 		$category_id = $request->query('category');
 		$name = $request->query('name');
 		$sort_column = $request->query('sort');
-
-		// TODO: Add a limit query
+		$limit = $request->query('limit', 6);
 
 		$products =
 			Product::when($category_id, function ($query, $category_id) {
@@ -53,7 +52,7 @@ class ProductsController extends Controller
 				}
 
 				return $query->orderBy($sort_column, $direction);
-			})->paginate(6);
+			})->paginate($limit);
 
 		return new ProductCollection($products);
 	}
