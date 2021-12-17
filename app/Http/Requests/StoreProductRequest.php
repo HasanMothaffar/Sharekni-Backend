@@ -32,6 +32,8 @@ class StoreProductRequest extends FormRequest
 			'description' => 'required|string',
 			'expiry_date' => 'required',
 			'image' => 'required|image',
+			'facebook_url' => 'string',
+			'phone_number' => 'required_without:facebook_url|string',
 			'quantity' => 'required|integer|gt:0',
 			'category_id' => 'exists:categories,id',
 		];

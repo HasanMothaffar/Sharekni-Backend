@@ -19,6 +19,8 @@ class Product extends Model
 		'expiry_date',
 		'quantity',
 		'category_id',
+		'phone_number',
+		'facebook_url'
 	];
 
 	protected $hidden = [

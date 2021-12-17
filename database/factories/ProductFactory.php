@@ -34,6 +34,8 @@ class ProductFactory extends Factory
 			'quantity' => $this->faker->numberBetween(2, 30),
 			'image_url' => $this->faker->imageUrl(),
 			'expiry_date' => $this->faker->dateTimeBetween('2021-12-30', '2022-1-30'),
+			'facebook_url' => $this->faker->url(),
+			'phone_number' => $this->faker->phoneNumber(),
 			'likes' => 0,
 			'views' => 0,
 			'category_id' => DB::selectOne('SELECT id from categories ORDER BY RAND() LIMIT 1')->id,

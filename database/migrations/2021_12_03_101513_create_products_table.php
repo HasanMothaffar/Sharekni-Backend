@@ -40,6 +40,10 @@ class CreateProductsTable extends Migration
 			$table->date('expiry_date');
 			$table->text('image_url')->nullable();
 
+			/* -- Contact Info -- */
+			$table->text('facebook_url')->nullable();
+			$table->text('phone_number')->nullable();
+
 			$table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
 			$table->foreignId('owner_id')->nullable()->constrained('users')->cascadeOnDelete();
 			$table->timestamps();
