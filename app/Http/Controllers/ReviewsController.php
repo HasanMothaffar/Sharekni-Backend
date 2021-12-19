@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ReviewCollection;
 use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Support\Facades\Gate;
@@ -35,7 +36,8 @@ class ReviewsController extends Controller
 
 		try {
 			$product = Product::findOrFail($productID);
-			return $product->reviews()->paginate(6);
+			$reviews =  $product->reviews()->paginate(6);
+			return new ReviewCollection($reviews);
 		} catch (ModelNotFoundException $e) {
 			return response()->json(['message' => 'Product not found.'], 404);
 		}
@@ -63,6 +65,13 @@ class ReviewsController extends Controller
 
 	public function destroy($productID, $reviewID)
 	{
+		try {
+			$product = Product::findOrFail($productID);
+		} catch (ModelNotFoundException $e) {
+			// return response()->json(['error' => $e]);
+			return $e->getModel();
+		}
+
 		$review = Review::where('id', $reviewID)
 			->where('product_id', $productID);
 		// TODO: Separate handling missing products and reviews
