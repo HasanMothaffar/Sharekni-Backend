@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
@@ -105,21 +106,28 @@ class ProductsController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, $id)
+	public function update(UpdateProductRequest $request, $id)
 	{
-		// TODO: Update products
-		$product = Product::find($id);
-		Gate::authorize('modify-product', $product);
+		// TODO: Update images
+		try {
+			$product = Product::find($id);
+			if (!Gate::allows('modify-product', $product)) {
+				return response()->json([
+					'message' => 'Your are not authorized to modify this product!'
+				], 403);
+			}
 
-		$request->validated();
+			$request->validated();
+			$product->update($request->safe()->all());
+			$product->save();
 
-		if (!$product) {
+			return response()->json([
+				'message' => 'Product updated successfully!',
+				'data' => new ProductResource($product)
+			], 200);
+		} catch (ModelNotFoundException $e) {
 			return response()->json(['message' => 'Product not found.'], 404);
 		}
-
-		// $product->newField = $request->newField;
-		// $product->save();
-		// return response()->json(['message' => 'Product updated successfully!', 'data' => $product], 200);
 	}
 
 	/**
@@ -132,8 +140,14 @@ class ProductsController extends Controller
 	{
 		try {
 			$product = Product::findOrFail($id);
-			Gate::authorize('modify-product', $product);
+			if (!Gate::allows('modify-product', $product)) {
+				return response()->json([
+					'message' => 'Your are not authorized to delete this product!'
+				], 403);
+			}
+
 			$product->delete();
+			// TODO: Delete the product's image from DB
 			return response()->json(['message' => 'Product deleted successfully!'], 200);
 		} catch (ModelNotFoundException $e) {
 			return response()->json(['message' => 'Product not found.'], 404);
