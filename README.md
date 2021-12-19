@@ -6,6 +6,14 @@
 
 ## Getting started
 
+### Documentation
+
+You can browse the online documentation in your browser or run it in Postman from this link:
+
+https://documenter.getpostman.com/view/15694901/UVRAH6Xf
+
+> I am planning to learn the OpenAPI 3.0 schema and update the docs according to it. Right now, I've written them by hand using Postman's collections, but there's no schema file for them.
+
 ### Installation
 
 1. Clone the repository and run
@@ -46,7 +54,4 @@ The authentication and authorization parts are mainly handled by **Laravel Sanct
 
 Read more about throttling (login throttling in the authentication docs laravel)
 
--   Refactor database model relationships.
--   Discuss the 'expiry_date' filters.
 -   Use the prunable trait in the product model to delete expired products
--   Handle images, date, and product prices
