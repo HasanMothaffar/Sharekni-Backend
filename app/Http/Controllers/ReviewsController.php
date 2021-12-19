@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ReviewCollection;
+use App\Http\Resources\ReviewResource;
 use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Support\Facades\Gate;
@@ -57,7 +58,10 @@ class ReviewsController extends Controller
 			$review['user_id'] = auth()->id();
 
 			$product->reviews()->save($review);
-			return response()->json(['message' => 'Review saved succesfully!'], 200);
+			return response()->json([
+				'message' => 'Review saved succesfully!',
+				'data' => new ReviewResource($review)
+			], 200);
 		} catch (ModelNotFoundException $e) {
 			return response()->json(['message' => 'Product not found.'], 404);
 		}
