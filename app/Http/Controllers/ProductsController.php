@@ -166,7 +166,8 @@ class ProductsController extends Controller
 			$user = auth()->user();
 
 			if ($user->likesProduct($id)) {
-				return response()->json(['message' => 'Product already liked.'], 200);
+				// Bad request
+				return response()->json(['message' => 'Product already liked.'], 400);
 			}
 
 			$user->likes()->attach($id);
@@ -186,8 +187,8 @@ class ProductsController extends Controller
 			$user = auth()->user();
 
 			if (!$user->likesProduct($id)) {
-				// TODO: Set a proper response code
-				return response()->json(['message' => 'Product is already not liked.']);
+				// Bad request
+				return response()->json(['message' => 'Product is already not liked.'], 400);
 			}
 
 			$user->likes()->detach($id);
