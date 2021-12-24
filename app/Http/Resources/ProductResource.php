@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Category;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class ProductResource extends JsonResource
 {
@@ -37,11 +38,13 @@ class ProductResource extends JsonResource
 			'description' => $this->description,
 			'expiry_date' => $this->expiry_date,
 			'quantity' => $this->quantity,
-			'image_url' => $this->image_url,
+			'image_url' => asset(Storage::url($this->image_url)),
 			'category' => Category::find($this->category_id)->name,
 			'reviews' => $this->when($is_request_for_a_single_product, $this->getReviewsWithUsers()),
 			'views' => $this->views,
 			'likes' => $this->likes,
+			'facebook_url' => $this->facebook_url,
+			'phone_number' => $this->phone_number,
 			'is_liked' => $is_product_liked
 		];
 	}

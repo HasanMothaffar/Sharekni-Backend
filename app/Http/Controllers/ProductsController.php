@@ -69,7 +69,7 @@ class ProductsController extends Controller
 
 		$product = new Product($request->safe()->all());
 		$product['owner_id'] = auth()->id();
-		$product['image_url'] = asset(Storage::url($image_upload_path));
+		$product['image_url'] = $image_upload_path;
 		$product['likes'] = 0;
 		$product['views'] = 0;
 		$product->save();
@@ -108,13 +108,18 @@ class ProductsController extends Controller
 	 */
 	public function update(UpdateProductRequest $request, $id)
 	{
-		// TODO: Update images
 		try {
 			$product = Product::find($id);
 			if (!Gate::allows('modify-product', $product)) {
 				return response()->json([
 					'message' => 'Your are not authorized to modify this product!'
 				], 403);
+			}
+
+			if ($request->file('image')) {
+				Storage::delete('public/' . $product->image_url);
+				$image_upload_path = $request->file('image')->store('products', 'public');
+				$product['image_url'] = $image_upload_path;
 			}
 
 			$request->validated();
@@ -146,8 +151,8 @@ class ProductsController extends Controller
 				], 403);
 			}
 
+			Storage::delete('public/' . $product->image_url);
 			$product->delete();
-			// TODO: Delete the product's image from DB
 			return response()->json(['message' => 'Product deleted successfully!'], 200);
 		} catch (ModelNotFoundException $e) {
 			return response()->json(['message' => 'Product not found.'], 404);
