@@ -150,8 +150,12 @@ class ProductsController extends Controller
 					'message' => 'Your are not authorized to delete this product!'
 				], 403);
 			}
+			
+			$image_path = 'public/' . $product->image_url;
+			if (Storage::exists($image_path)) {
+				Storage::delete($image_path);
+			}
 
-			Storage::delete('public/' . $product->image_url);
 			$product->delete();
 			return response()->json(['message' => 'Product deleted successfully!'], 200);
 		} catch (ModelNotFoundException $e) {
