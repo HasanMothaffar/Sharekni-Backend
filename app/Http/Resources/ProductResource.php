@@ -44,14 +44,15 @@ class ProductResource extends JsonResource
 			'description' => $this->description,
 			'expiry_date' => $this->expiry_date,
 			'quantity' => $this->quantity,
-			'image_url' => asset(Storage::url($this->image_url)),
+			'image_url' => $is_image_external ? $this->image_url : asset(Storage::url($this->image_url)),
 			'category' => Category::find($this->category_id)->name,
-			'reviews' => $this->when($is_request_for_a_single_product, $this->getReviewsWithUsers()),
+			'reviews' => $this->getReviewsWithUsers(),
 			'views' => $this->views,
 			'likes' => $this->likes,
 			'facebook_url' => $this->facebook_url,
 			'phone_number' => $this->phone_number,
-			'is_liked' => $is_product_liked
+			'is_liked' => $is_product_liked,
+			'owner_id' => $this->owner_id
 		];
 	}
 
@@ -89,7 +90,7 @@ class ProductResource extends JsonResource
 		return $this->reviews()
 			->get()
 			->map(function ($review) {
-				$review['user'] = $review->user()->get();
+				$review['user'] = $review->user()->get()->first();
 				return $review;
 			});
 	}
