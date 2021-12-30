@@ -23,10 +23,6 @@ class Product extends Model
 		'facebook_url'
 	];
 
-	protected $hidden = [
-		'owner_id'
-	];
-
 	public function reviews()
 	{
 		return $this->hasMany(Review::class);
