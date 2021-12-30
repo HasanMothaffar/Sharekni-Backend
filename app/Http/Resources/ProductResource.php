@@ -31,6 +31,12 @@ class ProductResource extends JsonResource
 		 */
 		$is_product_liked = auth('sanctum')->check() ? auth('sanctum')->user()->likesProduct($this->id) : false;
 
+		/**
+		 * In this case, the product is fake and its image is hosted
+		 * on another server.
+		 */
+		$is_image_external = strpos($this->image_url, 'http') == true;
+
 		return [
 			'id' => $this->id,
 			'name' => $this->name,
