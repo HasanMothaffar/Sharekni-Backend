@@ -201,7 +201,21 @@ class ProductsController extends Controller
 
 			return response()->json(['message' => 'Product disliked succesfully!'], 200);
 		} catch (ModelNotFoundException $e) {
-			return response()->json(['message' => 'Product not found.'], 404);
+			return response()->json(['message' => __('products.not_found')], 404);
+		}
+	}
+
+	public function increaseViews($id)
+	{
+		try {
+			$product = Product::findOrFail($id);
+
+			$product->views += 1;
+			$product->save();
+
+			return response()->json(['message' => 'Increased views for product successfully!'], 200);
+		} catch (ModelNotFoundException $e) {
+			return response()->json(['message' => __('products.not_found')], 404);
 		}
 	}
 }
