@@ -7,6 +7,14 @@ use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {
+	private $categories = [
+		'Electronics',
+		'Food',
+		'Cosmetics',
+		'Sports',
+		'Clothes',
+		'Shoes',
+	];
 	/**
 	 * Run the database seeds.
 	 *
@@ -14,8 +22,11 @@ class CategorySeeder extends Seeder
 	 */
 	public function run()
 	{
-		Category::factory()
-			->count(10)
-			->create();
+
+		foreach ($this->categories as $name) {
+			Category::create([
+				'name' => $name
+			]);
+		}
 	}
 }
