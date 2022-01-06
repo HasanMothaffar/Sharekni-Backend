@@ -26,9 +26,7 @@ class StoreProductRequest extends FormRequest
 		return [
 			'name' => 'required|string',
 			'original_price' => 'required|numeric|gt:0',
-			'price_1' => 'required|numeric|gt:0|lt:original_price',
-			'price_2' => 'required|numeric|gt:0|lt:price_1',
-			'price_3' => 'required|numeric|gt:0|lt:price_2',
+			'discounts' => 'required|json',
 			'description' => 'required|string',
 			'expiry_date' => 'required',
 			'image' => 'required|image',

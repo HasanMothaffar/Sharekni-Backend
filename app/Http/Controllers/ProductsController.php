@@ -6,6 +6,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
+use App\Models\Discount;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -65,14 +66,23 @@ class ProductsController extends Controller
 	public function store(StoreProductRequest $request)
 	{
 		$validated = $request->validated();
-		$image_upload_path = $request->file('image')->store('products', 'public');
-
 		$product = new Product($request->safe()->all());
+		$discounts = json_decode($request->input('discounts'), true);
+
+		$image_upload_path = $request->file('image')->store('products', 'public');
 		$product['owner_id'] = auth()->id();
 		$product['image_url'] = $image_upload_path;
 		$product['likes'] = 0;
 		$product['views'] = 0;
 		$product->save();
+
+		foreach ($discounts as $discount) {
+			$discount = new Discount([
+				'date' => $discount['date'],
+				'percentage' => $discount['percentage'],
+			]);
+			$product->discounts()->save($discount);
+		}
 
 		return response()->json([
 			'message' => __('products.store_success'),
