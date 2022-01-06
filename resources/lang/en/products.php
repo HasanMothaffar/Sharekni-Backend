@@ -12,6 +12,6 @@ return [
 
 	'delete_success' => 'Product deleted successfully!',
 	'update_success' => 'Product edited successfully!',
-	'store_sucess' => 'Product saved succesfully!',
+	'store_success' => 'Product saved succesfully!',
 	'store_review_success' => 'Review added successfully!'
 ];

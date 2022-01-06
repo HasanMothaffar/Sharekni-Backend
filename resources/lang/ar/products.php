@@ -12,6 +12,6 @@ return [
 
 	'delete_success' => 'تم حذف المنتج بنجاح!',
 	'update_success' => 'تم تحديث المنتج بنجاح!',
-	'store_sucess' => 'تمت إضافة المنتج بنجاح!',
+	'store_success' => 'تمت إضافة المنتج بنجاح!',
 	'store_review_success' => 'تمت إضافة التعليق بنجاح!'
 ];
