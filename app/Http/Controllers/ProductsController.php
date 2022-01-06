@@ -75,7 +75,7 @@ class ProductsController extends Controller
 		$product->save();
 
 		return response()->json([
-			'message' => 'Product saved successfully!',
+			'message' => __('products.store_success'),
 			'data' => new ProductResource($product)
 		], 200);
 	}
@@ -90,12 +90,9 @@ class ProductsController extends Controller
 	{
 		try {
 			$product = Product::findOrFail($id);
-			$product->views += 1;
-			$product->save();
-
 			return (new ProductResource($product))->response();
 		} catch (ModelNotFoundException $e) {
-			return response()->json(['message' => 'Product not found.'], 404);
+			return response()->json(['message' => __('products.not_found')], 404);
 		}
 	}
 
@@ -112,7 +109,7 @@ class ProductsController extends Controller
 			$product = Product::find($id);
 			if (!Gate::allows('modify-product', $product)) {
 				return response()->json([
-					'message' => 'Your are not authorized to modify this product!'
+					'message' => __('auth.unauthorized')
 				], 403);
 			}
 
@@ -127,11 +124,11 @@ class ProductsController extends Controller
 			$product->save();
 
 			return response()->json([
-				'message' => 'Product updated successfully!',
+				'message' => __('products.update_success'),
 				'data' => new ProductResource($product)
 			], 200);
 		} catch (ModelNotFoundException $e) {
-			return response()->json(['message' => 'Product not found.'], 404);
+			return response()->json(['message' => __('products.not_found')], 404);
 		}
 	}
 
@@ -146,20 +143,18 @@ class ProductsController extends Controller
 		try {
 			$product = Product::findOrFail($id);
 			if (!Gate::allows('modify-product', $product)) {
-				return response()->json([
-					'message' => 'Your are not authorized to delete this product!'
-				], 403);
+				return response()->json(['message' => __('auth.unauthorized')], 403);
 			}
-			
+
 			$image_path = 'public/' . $product->image_url;
 			if (Storage::exists($image_path)) {
 				Storage::delete($image_path);
 			}
 
 			$product->delete();
-			return response()->json(['message' => 'Product deleted successfully!'], 200);
+			return response()->json(['message' => __('products.delete_success')], 200);
 		} catch (ModelNotFoundException $e) {
-			return response()->json(['message' => 'Product not found.'], 404);
+			return response()->json(['message' => __('products.not_found')], 404);
 		}
 	}
 
@@ -171,16 +166,16 @@ class ProductsController extends Controller
 
 			if ($user->likesProduct($id)) {
 				// Bad request
-				return response()->json(['message' => 'Product already liked.'], 400);
+				return response()->json(['message' => __('products.like_fail')], 400);
 			}
 
 			$user->likes()->attach($id);
 			$product->likes += 1;
 			$product->save();
 
-			return response()->json(['message' => 'Product liked succesfully!'], 200);
+			return response()->json(['message' => __('products.like_success')], 200);
 		} catch (ModelNotFoundException $e) {
-			return response()->json(['message' => 'Product not found.'], 404);
+			return response()->json(['message' => __('products.not_found')], 404);
 		}
 	}
 
@@ -192,14 +187,14 @@ class ProductsController extends Controller
 
 			if (!$user->likesProduct($id)) {
 				// Bad request
-				return response()->json(['message' => 'Product is already not liked.'], 400);
+				return response()->json(['message' => __('products.dislike_fail')], 400);
 			}
 
 			$user->likes()->detach($id);
 			$product->likes -= 1;
 			$product->save();
 
-			return response()->json(['message' => 'Product disliked succesfully!'], 200);
+			return response()->json(['message' => __('products.dislike_success')], 200);
 		} catch (ModelNotFoundException $e) {
 			return response()->json(['message' => __('products.not_found')], 404);
 		}
@@ -213,7 +208,7 @@ class ProductsController extends Controller
 			$product->views += 1;
 			$product->save();
 
-			return response()->json(['message' => 'Increased views for product successfully!'], 200);
+			return response()->json(['message' => __('products.increase_view')], 200);
 		} catch (ModelNotFoundException $e) {
 			return response()->json(['message' => __('products.not_found')], 404);
 		}

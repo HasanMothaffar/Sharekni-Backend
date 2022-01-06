@@ -24,7 +24,7 @@ class AuthController extends Controller
 		return response()->json([
 			'token' => $user->createToken('API Token')->plainTextToken,
 			'data' => $user,
-			'message' => 'Successfully created an account!'
+			'message' => __('auth.signup_success')
 		], 200);
 	}
 
@@ -35,7 +35,7 @@ class AuthController extends Controller
 
 		if (!Auth::attempt($fields)) {
 			return response()->json([
-				'message' => 'Invalid credentials'
+				'message' => __('auth.failed')
 			], 401);
 		}
 
@@ -43,7 +43,7 @@ class AuthController extends Controller
 		return response()->json([
 			'token' => $user->createToken('API Token')->plainTextToken,
 			'data' => $user,
-			'message' => 'Successfully logged in!'
+			'message' => __('auth.login_success')
 		], 200);
 	}
 
@@ -51,7 +51,7 @@ class AuthController extends Controller
 	{
 		auth()->user()->tokens()->delete();
 		return response()->json([
-			'message' => 'Logged out successfully!'
+			'message' => __('auth.logout_success')
 		], 200);
 	}
 }

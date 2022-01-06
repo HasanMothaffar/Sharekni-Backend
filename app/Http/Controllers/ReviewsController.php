@@ -37,10 +37,10 @@ class ReviewsController extends Controller
 
 		try {
 			$product = Product::findOrFail($productID);
-			$reviews =  $product->reviews()->paginate(6);
+			$reviews =  $product->reviews()->get();
 			return new ReviewCollection($reviews);
 		} catch (ModelNotFoundException $e) {
-			return response()->json(['message' => 'Product not found.'], 404);
+			return response()->json(['message' => __('products.not_found')], 404);
 		}
 	}
 
@@ -59,11 +59,11 @@ class ReviewsController extends Controller
 
 			$product->reviews()->save($review);
 			return response()->json([
-				'message' => 'Review saved succesfully!',
+				'message' => __('products.store_review_success'),
 				'data' => new ReviewResource($review)
 			], 200);
 		} catch (ModelNotFoundException $e) {
-			return response()->json(['message' => 'Product not found.'], 404);
+			return response()->json(['message' => __('products.not_found')], 404);
 		}
 	}
 
