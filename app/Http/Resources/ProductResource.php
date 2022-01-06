@@ -35,7 +35,7 @@ class ProductResource extends JsonResource
 		 * In this case, the product is fake and its image is hosted
 		 * on another server.
 		 */
-		$is_image_external = strpos($this->image_url, 'http') == true;
+		$is_image_external = str_contains($this->image_url, 'http');
 
 		return [
 			'id' => $this->id,
@@ -93,5 +93,10 @@ class ProductResource extends JsonResource
 				$review['user'] = $review->user()->get()->first();
 				return $review;
 			});
+	}
+
+	public function withResponse($request, $response)
+	{
+		$response->setEncodingOptions(JSON_UNESCAPED_SLASHES)->header('Content-Type', 'application/json');
 	}
 }

@@ -22,4 +22,9 @@ class UserResource extends JsonResource
 			'reviews' => $this->reviews()->get()
 		];
 	}
+
+	public function withResponse($request, $response)
+	{
+		$response->setEncodingOptions(JSON_UNESCAPED_SLASHES);
+	}
 }
