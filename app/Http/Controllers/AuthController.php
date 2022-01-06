@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -23,7 +23,8 @@ class AuthController extends Controller
 
 		return response()->json([
 			'token' => $user->createToken('API Token')->plainTextToken,
-			'user' => $user
+			'data' => $user,
+			'message' => __('auth.signup_success')
 		], 200);
 	}
 
@@ -34,14 +35,15 @@ class AuthController extends Controller
 
 		if (!Auth::attempt($fields)) {
 			return response()->json([
-				'message' => 'Invalid credentials'
+				'message' => __('auth.failed')
 			], 401);
 		}
 
 		$user = User::firstWhere('email', $fields['email']);
 		return response()->json([
 			'token' => $user->createToken('API Token')->plainTextToken,
-			'user' => $user
+			'data' => $user,
+			'message' => __('auth.login_success')
 		], 200);
 	}
 
@@ -49,7 +51,7 @@ class AuthController extends Controller
 	{
 		auth()->user()->tokens()->delete();
 		return response()->json([
-			'message' => 'Logged out successfully!'
+			'message' => __('auth.logout_success')
 		], 200);
 	}
 }

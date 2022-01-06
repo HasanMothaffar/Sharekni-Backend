@@ -3,7 +3,6 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
-use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +26,7 @@ Route::get('/categories', [CategoriesController::class, 'index']);
 
 Route::get('/products', [ProductsController::class, 'index']);
 Route::get('/products/{id}', [ProductsController::class, 'show']);
+Route::post('/products/{id}/views', [ProductsController::class, 'increaseViews']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
 	Route::get('/profile', [UsersController::class, 'profile']);

@@ -5,20 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Review extends Model
+class Discount extends Model
 {
 	use HasFactory;
 
 	protected $fillable = [
-		'comment'
+		'percentage',
+		'date'
 	];
-
-	protected $hidden = [
-		'product_id',
-		'user_id'
-	];
-
-	public function user() {
-		return $this->belongsTo(User::class);
-	}
 }

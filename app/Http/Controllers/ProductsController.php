@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
+use App\Models\Discount;
 use App\Models\Product;
-use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -27,6 +28,7 @@ class ProductsController extends Controller
 		$category_id = $request->query('category');
 		$name = $request->query('name');
 		$sort_column = $request->query('sort');
+		$limit = $request->query('limit', 6);
 
 		$products =
 			Product::when($category_id, function ($query, $category_id) {
@@ -50,7 +52,7 @@ class ProductsController extends Controller
 				}
 
 				return $query->orderBy($sort_column, $direction);
-			})->paginate(6);
+			})->paginate($limit);
 
 		return new ProductCollection($products);
 	}
@@ -63,14 +65,27 @@ class ProductsController extends Controller
 	public function store(StoreProductRequest $request)
 	{
 		$validated = $request->validated();
+		$product = new Product($request->safe()->all());
+		$discounts = json_decode($request->input('discounts'), true);
 
-		$product = Product::create($request->safe()->all());
+		$image_upload_path = $request->file('image')->store('products', 'public');
 		$product['owner_id'] = auth()->id();
+		$product['image_url'] = $image_upload_path;
+		$product['likes'] = 0;
+		$product['views'] = 0;
 		$product->save();
 
+		foreach ($discounts as $discount) {
+			$discount = new Discount([
+				'date' => $discount['date'],
+				'percentage' => $discount['percentage'],
+			]);
+			$product->discounts()->save($discount);
+		}
+
 		return response()->json([
-			'message' => 'Product saved successfully!',
-			'data' => $product
+			'message' => __('products.store_success'),
+			'data' => new ProductResource($product)
 		], 200);
 	}
 
@@ -84,13 +99,10 @@ class ProductsController extends Controller
 	{
 		try {
 			$product = Product::findOrFail($id);
-			$product->views += 1;
-			$product->save();
-
 			return (new ProductResource($product))->response();
 
 		} catch (ModelNotFoundException $e) {
-			return response()->json(['message' => 'Product not found.'], 404);
+			return response()->json(['message' => __('products.not_found')], 404);
 		}
 	}
 
@@ -101,20 +113,33 @@ class ProductsController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, $id)
+	public function update(UpdateProductRequest $request, $id)
 	{
-		$product = Product::find($id);
-		Gate::authorize('modify-product', $product);
+		try {
+			$product = Product::find($id);
+			if (!Gate::allows('modify-product', $product)) {
+				return response()->json([
+					'message' => __('auth.unauthorized')
+				], 403);
+			}
 
-		$request->validated();
+			if ($request->file('image')) {
+				Storage::delete('public/' . $product->image_url);
+				$image_upload_path = $request->file('image')->store('products', 'public');
+				$product['image_url'] = $image_upload_path;
+			}
 
-		if (!$product) {
-			return response()->json(['message' => 'Product not found.'], 404);
+			$request->validated();
+			$product->update($request->safe()->all());
+			$product->save();
+
+			return response()->json([
+				'message' => __('products.update_success'),
+				'data' => new ProductResource($product)
+			], 200);
+		} catch (ModelNotFoundException $e) {
+			return response()->json(['message' => __('products.not_found')], 404);
 		}
-
-		// $product->newField = $request->newField;
-		// $product->save();
-		// return response()->json(['message' => 'Product updated successfully!', 'data' => $product], 200);
 	}
 
 	/**
@@ -127,11 +152,19 @@ class ProductsController extends Controller
 	{
 		try {
 			$product = Product::findOrFail($id);
-			Gate::authorize('modify-product', $product);
+			if (!Gate::allows('modify-product', $product)) {
+				return response()->json(['message' => __('auth.unauthorized')], 403);
+			}
+
+			$image_path = 'public/' . $product->image_url;
+			if (Storage::exists($image_path)) {
+				Storage::delete($image_path);
+			}
+
 			$product->delete();
-			return response()->json(['message' => 'Product deleted successfully!'], 200);
+			return response()->json(['message' => __('products.delete_success')], 200);
 		} catch (ModelNotFoundException $e) {
-			return response()->json(['message' => 'Product not found.'], 404);
+			return response()->json(['message' => __('products.not_found')], 404);
 		}
 	}
 
@@ -139,8 +172,55 @@ class ProductsController extends Controller
 	{
 		try {
 			$product = Product::findOrFail($id);
+			$user = auth()->user();
+
+			if ($user->likesProduct($id)) {
+				// Bad request
+				return response()->json(['message' => __('products.like_fail')], 400);
+			}
+
+			$user->likes()->attach($id);
+			$product->likes += 1;
+			$product->save();
+
+			return response()->json(['message' => __('products.like_success')], 200);
 		} catch (ModelNotFoundException $e) {
-			return response()->json(['message' => 'Product not found.'], 404);
+			return response()->json(['message' => __('products.not_found')], 404);
+		}
+	}
+
+	public function dislike($id)
+	{
+		try {
+			$product = Product::findOrFail($id);
+			$user = auth()->user();
+
+			if (!$user->likesProduct($id)) {
+				// Bad request
+				return response()->json(['message' => __('products.dislike_fail')], 400);
+			}
+
+			$user->likes()->detach($id);
+			$product->likes -= 1;
+			$product->save();
+
+			return response()->json(['message' => __('products.dislike_success')], 200);
+		} catch (ModelNotFoundException $e) {
+			return response()->json(['message' => __('products.not_found')], 404);
+		}
+	}
+
+	public function increaseViews($id)
+	{
+		try {
+			$product = Product::findOrFail($id);
+
+			$product->views += 1;
+			$product->save();
+
+			return response()->json(['message' => __('products.increase_view')], 200);
+		} catch (ModelNotFoundException $e) {
+			return response()->json(['message' => __('products.not_found')], 404);
 		}
 	}
 }

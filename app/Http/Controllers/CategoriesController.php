@@ -8,6 +8,8 @@ class CategoriesController extends Controller
 {
 	public function index()
 	{
-		return Category::all();
+		return response()->json([
+			'data' => Category::all()
+		], 200);
 	}
 }

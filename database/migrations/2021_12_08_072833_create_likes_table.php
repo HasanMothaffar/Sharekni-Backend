@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateReviewsTable extends Migration
+class CreateLikesTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -13,12 +13,13 @@ class CreateReviewsTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('reviews', function (Blueprint $table) {
-			$table->id();
-			$table->string('comment');
+		Schema::create('likes', function (Blueprint $table) {
+			/**
+			 * Reference on how to setup the likes table:
+			 * https://stackoverflow.com/questions/57975383/add-likes-to-post-laravel
+			 */
 			$table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
 			$table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
-			$table->timestamps();
 		});
 	}
 
@@ -29,6 +30,6 @@ class CreateReviewsTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('reviews');
+		Schema::dropIfExists('likes');
 	}
 }

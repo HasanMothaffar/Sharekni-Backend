@@ -14,16 +14,24 @@ class ProductFactory extends Factory
 	 */
 	public function definition()
 	{
+		/**
+		 * Prices are hardcoded because they have to follow
+		 * a validation logic that's not possible to implement
+		 * using the Faker library.
+		 */
+		$original_price = 300;
+
 		return [
 			'name' => $this->faker->name(),
-			'original_price' => $this->faker->numberBetween(2, 30),
-			'price_1' => $this->faker->numberBetween(2, 30),
-			'price_2' => $this->faker->numberBetween(2, 30),
-			'price_3' => $this->faker->numberBetween(2, 30),
+			'original_price' => $original_price,
 			'description' => $this->faker->text(),
 			'quantity' => $this->faker->numberBetween(2, 30),
-			'img_url' => $this->faker->text(),
-			'expiry_date' => $this->faker->date(),
+			'image_url' => $this->faker->imageUrl(),
+			'expiry_date' => $this->faker->dateTimeBetween('2021-12-30', '2022-1-30'),
+			'facebook_url' => $this->faker->url(),
+			'phone_number' => $this->faker->phoneNumber(),
+			'likes' => 0,
+			'views' => 0,
 			'category_id' => DB::selectOne('SELECT id from categories ORDER BY RAND() LIMIT 1')->id,
 			'owner_id' => DB::selectOne('SELECT id from users ORDER BY RAND() LIMIT 1')->id
 		];

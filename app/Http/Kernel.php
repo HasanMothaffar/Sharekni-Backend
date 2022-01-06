@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\LocaleHandler;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,7 @@ class Kernel extends HttpKernel
 		\Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
 		\App\Http\Middleware\TrimStrings::class,
 		\Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+		\App\Http\Middleware\LocaleHandler::class,
 	];
 
 	/**
@@ -75,8 +77,8 @@ class Kernel extends HttpKernel
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-		$schedule->call(function () {
-			DB::delete('DELETE FROM products WHERE expiry_date <= ?', [time()]);
-		})->daily();
+		// $schedule->call(function () {
+		// 	DB::delete('DELETE FROM products WHERE expiry_date <= ?', [time()]);
+		// })->daily();
 	}
 }
