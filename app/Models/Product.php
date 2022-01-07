@@ -52,16 +52,23 @@ class Product extends Model
 		 */
 		$expiry_date = Carbon::parse($this->expiry_date);
 		$date_diff = Carbon::now()->diffInDays($expiry_date, false);
+		$discounts = $this->discounts()->get();
 		$price = $this->original_price;
 
-		if ($date_diff < 30 && $date_diff >= 15) {
-			$price = $this['price_1'];
-		} else if ($date_diff < 15 && $date_diff >= 7) {
-			$price = $this['price_2'];
-		} else if ($date_diff < 7 && $date_diff > 0) {
-			$price = $this['price_3'];
+		if ($discounts->count() == 0) {
+			return $price;
 		}
 
-		return $price;
+		$max_discount = 0;
+		$max_diff = $discounts[0]['days_before_expiration'];
+
+		foreach ($discounts as $discount) {
+			$diff = $discount['days_before_expiration'] - $date_diff;
+			if ($diff > 0 && $diff < $max_diff) {
+				$max_discount = $discount['percentage'];
+			}
+		}
+
+		return $price - ($max_discount / 100.0 * $price);
 	}
 }
