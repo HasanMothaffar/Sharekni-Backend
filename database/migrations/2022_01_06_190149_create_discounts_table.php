@@ -18,7 +18,7 @@ class CreateDiscountsTable extends Migration
 			$table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
 
 			$table->integer('percentage');
-			$table->date('date');
+			$table->integer('days_before_expiration');
 
 			$table->timestamps();
 		});
