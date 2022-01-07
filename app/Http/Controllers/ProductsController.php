@@ -10,6 +10,7 @@ use App\Models\Discount;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
@@ -78,7 +79,7 @@ class ProductsController extends Controller
 
 		foreach ($discounts as $discount) {
 			$discount = new Discount([
-				'date' => $discount['date'],
+				'days_before_expiration' => $discount['days_before_expiration'],
 				'percentage' => $discount['percentage'],
 			]);
 			$product->discounts()->save($discount);
@@ -130,6 +131,21 @@ class ProductsController extends Controller
 			}
 
 			$request->validated();
+
+			if ($request->input('discounts')) {
+				$discounts = json_decode($request->input('discounts'), true);
+
+				DB::delete('DELETE FROM discounts WHERE product_id = ?', [$product['id']]);
+
+				foreach ($discounts as $discount) {
+					$discount = new Discount([
+						'days_before_expiration' => $discount['days_before_expiration'],
+						'percentage' => $discount['percentage'],
+					]);
+					$product->discounts()->save($discount);
+				}
+			}
+
 			$product->update($request->safe()->all());
 			$product->save();
 

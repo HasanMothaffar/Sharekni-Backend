@@ -40,6 +40,7 @@ class ProductResource extends JsonResource
 			'id' => $this->id,
 			'name' => $this->name,
 			'price' => $this->getPrice(),
+			'discount' => $this->discounts()->get(),
 			'description' => $this->description,
 			'expiry_date' => $this->expiry_date,
 			'quantity' => $this->quantity,
