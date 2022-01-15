@@ -48,5 +48,6 @@ This app demonstrates our understanding of REST APIS through some basic features
 -   CRUD operations on the products resource
 -   Registration - Logging in - Logging out
 -   Adding likes to products
+-   Translating responses according to the value of the languagae header
 
 The authentication and authorization parts are mainly handled by **Laravel Sanctum**
