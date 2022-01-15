@@ -1,8 +1,8 @@
-# Sharekni - WIP
+# Sharekni
 
-> This repository contains the backend logic for our app. The frontend is a Flutter app that will later be developed by other members of our team.
+A REST API written in Laravel for a university project. It's a simple e-commerce app through which you can browse products that have an expiration date. Before the actual expiration date by a user-entered period of time, a discount will be applied to the product. Users can register an account on the platform and add their own products and contact information so that other users can contact them.
 
-> This is work in progress document. I will be regularly updating it as we progress through the project
+> This repository contains the backend logic for our app. The frontend is a Flutter app that is developed by other members of our team.
 
 ## Getting started
 
@@ -47,11 +47,6 @@ This app demonstrates our understanding of REST APIS through some basic features
 
 -   CRUD operations on the products resource
 -   Registration - Logging in - Logging out
+-   Adding likes to products
 
 The authentication and authorization parts are mainly handled by **Laravel Sanctum**
-
-## TODO
-
-Read more about throttling (login throttling in the authentication docs laravel)
-
--   Use the prunable trait in the product model to delete expired products
